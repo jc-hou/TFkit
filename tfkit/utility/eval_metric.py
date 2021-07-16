@@ -65,18 +65,9 @@ class EvalMetric:
             text = ' '.join(text.split()).lower().strip()  # remove extra blank
         return text
 
-    def add_record(self, ori_input, ori_predicted, ori_target, task='default'):
-        input = predicted = target = ""
-        input_list = predicted_list = target_list = []
-
-        if isinstance(ori_input, str):
-            input = self.tokenize_text(ori_input.strip())
-            input_list = [input]
-        if isinstance(ori_input, list):
-            input_list = copy.copy(ori_input)
-            for i, t in enumerate(ori_input):
-                input_list[i] = self.tokenize_text(t.strip())
-            input = " ".join(input_list)
+    def add_record(self, ori_predicted, ori_target, task='default'):
+        predicted = target = ""
+        predicted_list = target_list = []
 
         if isinstance(ori_predicted, str):
             predicted = self.tokenize_text(ori_predicted)
@@ -103,13 +94,10 @@ class EvalMetric:
         for t in target_list:
             self.target_list[task][t] += 1
 
-        self.tasks[task]['input'].append(input)
-        self.tasks[task]['input_list'].append(input_list)
         self.tasks[task]['predicted'].append(predicted)
         self.tasks[task]['predicted_list'].append(predicted_list)
         self.tasks[task]['target'].append(target)
         self.tasks[task]['target_list'].append(target_list)
-        self.tasks[task]['ori_input'].append(ori_input)
         self.tasks[task]['ori_predicted'].append(ori_predicted)
         self.tasks[task]['ori_target'].append(ori_target)
 
@@ -181,7 +169,7 @@ class EvalMetric:
                     print(
                         "nlg-eval package not install, plz install it: pip install git+https://github.com/voidful/nlg-eval.git ; nlg-eval --setup ./nlg-eval-data/")
                     raise
-                nlgeval = NLGEval(no_skipthoughts=True, no_glove=True, metrics_to_omit=["METEOR"])
+                nlgeval = NLGEval(no_skipthoughts=True, no_glove=True)
 
                 target_list = task['target_list']
                 predicted = task['predicted']
